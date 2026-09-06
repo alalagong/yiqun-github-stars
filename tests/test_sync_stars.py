@@ -49,6 +49,8 @@ class SyncStarsTests(unittest.TestCase):
         self.assertEqual(row["name"], "octo / demo")
         self.assertEqual(row["index"], 7)
         self.assertEqual(row["stars"], 123)
+        self.assertEqual(row["activity"], "近一年更新")
+        self.assertEqual(row["popularity"], "100+")
 
     def test_build_sync_result_detects_added_removed_changed_and_unchanged(self):
         previous = [
