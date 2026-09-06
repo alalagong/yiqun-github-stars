@@ -1,0 +1,42 @@
+name: 同步 GitHub Stars
+
+on:
+  schedule:
+    - cron: "17 2 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 运行同步测试
+        run: python -m unittest discover -s tests -v
+
+      - name: 同步公开 Stars
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/sync_stars.py --username alalagong --data-dir data --token-env GITHUB_TOKEN
+
+      - name: 提交变化
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data; then
+            echo "没有新的数据变化，不创建空提交。"
+          else
+            git add data
+            git commit -m "chore: sync GitHub stars"
+            git push
+          fi
+
