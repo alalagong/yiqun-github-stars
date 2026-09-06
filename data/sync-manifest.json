@@ -1,15 +1,13 @@
 {
   "source": "https://api.github.com/users/alalagong/starred",
   "username": "alalagong",
-  "collected_at": "2026-09-06",
+  "collected_at": "2026-09-06T14:26:28Z",
   "row_count": 730,
-  "snapshot_file": "data/history/stars-2026-09-06.json",
+  "snapshot_file": "data/history/stars-2026-09-06T14-26-28Z.json",
   "change_summary": {
-    "added": 730,
+    "added": 0,
     "removed": 0,
-    "changed": 0,
+    "changed": 730,
     "unchanged": 0
-  },
-  "metadata_note": "Initial migration from the verified public Stars export."
+  }
 }
-
