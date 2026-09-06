@@ -80,6 +80,8 @@ def fetch_starred_repositories(username: str, token: str | None = None, opener=N
 def normalize_repository(payload: dict, index: int) -> dict:
     owner = (payload.get("owner") or {}).get("login") or "unknown"
     repo = payload.get("name") or "unknown"
+    updated = payload.get("pushed_at") or payload.get("updated_at") or ""
+    stars = int(payload.get("stargazers_count") or 0)
     return {
         "index": index,
         "owner": owner,
@@ -88,10 +90,39 @@ def normalize_repository(payload: dict, index: int) -> dict:
         "url": payload.get("html_url") or f"https://github.com/{owner}/{repo}",
         "description": payload.get("description") or "",
         "language": payload.get("language") or "",
-        "stars": int(payload.get("stargazers_count") or 0),
+        "stars": stars,
         "forks": int(payload.get("forks_count") or 0),
-        "updated": payload.get("pushed_at") or payload.get("updated_at") or "",
+        "updated": updated,
+        "activity": activity_label(updated),
+        "popularity": popularity_label(stars),
     }
+
+
+def activity_label(updated: str) -> str:
+    if not updated:
+        return "更新时间未知"
+    try:
+        date = datetime.fromisoformat(updated.replace("Z", "+00:00"))
+    except ValueError:
+        return "更新时间未知"
+    days = max(0, (datetime.now(timezone.utc) - date).days)
+    if days < 365:
+        return "近一年更新"
+    if days < 365 * 3:
+        return "1–3年前更新"
+    if days < 365 * 5:
+        return "3–5年前更新"
+    return "5年以上未更新"
+
+
+def popularity_label(stars: int) -> str:
+    if stars >= 10000:
+        return "10k+"
+    if stars >= 1000:
+        return "1k+"
+    if stars >= 100:
+        return "100+"
+    return "<100"
 
 
 def _comparison_row(row: dict) -> dict:
@@ -165,6 +196,9 @@ def sync(data_dir: Path, username: str, token: str | None = None, dry_run: bool 
         key = f"{row['owner']}/{row['repo']}"
         previous = previous_map.get(key)
         if previous:
+            for field, value in previous.items():
+                if field not in row:
+                    row[field] = value
             for field in CLASSIFICATION_FIELDS:
                 if field in previous:
                     row[field] = previous[field]
