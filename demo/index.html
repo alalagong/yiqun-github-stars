@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>GitHub Stars · 个人资产库</title>
+  <style>
+    :root {
+      --paper: #f7f3ea;
+      --surface: #fffdf8;
+      --surface-strong: #ffffff;
+      --ink: #13233f;
+      --muted: #657086;
+      --line: #d9d5ca;
+      --blue: #2864dc;
+      --blue-soft: #eaf0ff;
+      --amber: #b76800;
+      --amber-soft: #fff0cf;
+      --shadow: 0 14px 38px rgba(19, 35, 63, .10);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+    button, input, select, textarea { font: inherit; }
+    button, select { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible {
+      outline: 3px solid rgba(40, 100, 220, .28);
+      outline-offset: 2px;
+    }
+    .page { width: min(1440px, calc(100% - 40px)); margin: 0 auto; padding: 40px 0 56px; }
+    .masthead { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+    .eyebrow { margin: 0 0 7px; color: var(--blue); font-size: .76rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.35rem); line-height: 1.02; letter-spacing: -.045em; }
+    .lede { max-width: 680px; margin: 12px 0 0; color: var(--muted); font-size: 1.02rem; }
+    .button {
+      border: 1px solid var(--ink); border-radius: 10px; background: var(--ink); color: #fff;
+      padding: 10px 15px; font-weight: 750; white-space: nowrap;
+    }
+    .button:hover { transform: translateY(-1px); }
+    .button.secondary { border-color: var(--line); background: var(--surface); color: var(--ink); }
+    .button.primary { border-color: var(--blue); background: var(--blue); }
+    .button:disabled { cursor: not-allowed; opacity: .45; transform: none; }
+
+    .summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .stat { min-height: 100px; padding: 17px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+    .stat strong { display: block; font-size: clamp(1.55rem, 3vw, 2.15rem); letter-spacing: -.04em; }
+    .stat span { color: var(--muted); font-size: .83rem; font-weight: 700; }
+    .stat.review { border-color: #e1c289; background: var(--amber-soft); }
+    .stat.review strong, .review-flag { color: var(--amber); }
+
+    .workspace { display: grid; grid-template-columns: minmax(235px, 280px) minmax(0, 1fr); gap: 18px; align-items: start; }
+    .controls { position: sticky; top: 16px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .controls h2, .results-heading h2 { margin: 0; font-size: 1rem; }
+    .field { margin-top: 14px; }
+    label { display: block; margin-bottom: 6px; font-size: .77rem; font-weight: 800; letter-spacing: .025em; }
+    input[type="search"], input[type="text"], select, textarea {
+      width: 100%; border: 1px solid #c9c5ba; border-radius: 9px; background: var(--surface-strong); color: var(--ink); padding: 10px 11px;
+    }
+    textarea { min-height: 112px; resize: vertical; }
+    .control-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+
+    .results-panel { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; box-shadow: var(--shadow); }
+    .results-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+    .status-message { margin: 0; color: var(--muted); font-size: .82rem; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th { padding: 10px 12px; background: #f1eee7; color: var(--muted); font-size: .72rem; letter-spacing: .045em; text-align: left; text-transform: uppercase; }
+    td { padding: 14px 12px; border-top: 1px solid #e7e3da; vertical-align: top; font-size: .86rem; }
+    th:nth-child(1) { width: 35%; } th:nth-child(2) { width: 17%; } th:nth-child(3) { width: 16%; }
+    th:nth-child(4) { width: 10%; } th:nth-child(5) { width: 9%; } th:nth-child(6) { width: 13%; }
+    tbody tr { transition: background .14s ease; }
+    tbody tr:hover { background: #faf8f1; }
+    .repo-button { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: var(--blue); font-weight: 800; text-align: left; }
+    .repo-button:hover { text-decoration: underline; }
+    .description { display: -webkit-box; margin-top: 5px; overflow: hidden; color: var(--muted); font-size: .8rem; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .pill { display: inline-block; max-width: 100%; padding: 4px 8px; overflow: hidden; border-radius: 999px; background: var(--blue-soft); color: #244f9f; font-size: .72rem; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+    .pill.status-Inbox { background: #eceae4; color: #596276; }
+    .pill.status-Read-next { background: var(--amber-soft); color: var(--amber); }
+    .pill.status-Experimented { background: #e8edff; color: #3c50a4; }
+    .pill.status-Reusable { background: #def4e5; color: #226f42; }
+    .pill.status-Archived { background: #e7e8ea; color: #555d69; }
+    .metric { font-variant-numeric: tabular-nums; font-weight: 750; }
+    .muted { color: var(--muted); }
+    .empty { padding: 56px 24px; color: var(--muted); text-align: center; }
+    .empty[hidden], .drawer[hidden], .backdrop[hidden] { display: none; }
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 15px; border-top: 1px solid var(--line); }
+    .pagination .button { padding: 7px 12px; }
+    #page-info { min-width: 112px; color: var(--muted); font-size: .82rem; text-align: center; }
+
+    .backdrop { position: fixed; inset: 0; z-index: 20; background: rgba(11, 21, 39, .42); backdrop-filter: blur(2px); }
+    .drawer { position: fixed; inset: 0 0 0 auto; z-index: 21; width: min(560px, 100%); overflow-y: auto; background: var(--surface); box-shadow: -18px 0 50px rgba(11, 21, 39, .22); }
+    .drawer-inner { padding: 26px clamp(20px, 4vw, 36px) 42px; }
+    .drawer-header { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+    .drawer h2 { margin: 2px 0 5px; font-size: clamp(1.45rem, 4vw, 2.1rem); letter-spacing: -.035em; overflow-wrap: anywhere; }
+    .icon-button { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--ink); font-size: 1.35rem; }
+    .repo-link { color: var(--blue); font-weight: 750; }
+    .detail-description { margin: 22px 0; color: #3e4a60; }
+    .metadata { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 24px; }
+    .metadata div { min-width: 0; padding: 11px; border: 1px solid #e3dfd5; border-radius: 10px; background: #faf8f2; }
+    .metadata dt { color: var(--muted); font-size: .7rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+    .metadata dd { margin: 4px 0 0; font-size: .84rem; overflow-wrap: anywhere; }
+    .annotation-form { padding-top: 22px; border-top: 1px solid var(--line); }
+    .annotation-form h3 { margin: 0; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-actions { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+    .save-message { color: #226f42; font-size: .82rem; }
+
+    @media (max-width: 900px) {
+      .page { width: min(100% - 24px, 760px); padding-top: 24px; }
+      .masthead { align-items: start; flex-direction: column; }
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .workspace { grid-template-columns: 1fr; }
+      .controls { position: static; }
+      .filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+    }
+
+    @media (max-width: 650px) {
+      .page { width: min(100% - 18px, 560px); }
+      .summary { gap: 8px; }
+      .stat { min-height: 86px; padding: 13px; }
+      .filters { display: block; }
+      .control-actions { grid-template-columns: 1fr; }
+      .results-heading { align-items: start; flex-direction: column; }
+      .table-wrap { overflow: visible; }
+      table, tbody { display: block; }
+      thead { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+      tbody { padding: 10px; }
+      tbody tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 10px; padding: 13px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-strong); }
+      td { display: block; padding: 7px 5px; border: 0; min-width: 0; }
+      td:first-child { grid-column: 1 / -1; padding-bottom: 10px; border-bottom: 1px solid #ece8df; }
+      td::before { content: attr(data-label); display: block; margin-bottom: 2px; color: var(--muted); font-size: .66rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+      td:first-child::before { display: none; }
+      .pagination { gap: 8px; }
+      .metadata, .form-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <div>
+      <p class="eyebrow">个人知识资产库</p>
+        <h1>GitHub Stars 索引</h1>
+        <p class="lede">把收藏过的仓库重新找出来，判断它能做什么，并给未来的自己留下下一步。</p>
+        <p class="status-message" id="data-meta">数据更新时间：正在读取……</p>
+      </div>
+      <button class="button secondary" id="export-button" type="button">导出我的标注</button>
+    </header>
+
+    <section class="summary" aria-label="仓库统计">
+      <article class="stat"><strong id="stat-total">—</strong><span>仓库总数</span></article>
+      <article class="stat"><strong id="stat-results">—</strong><span>当前结果</span></article>
+      <article class="stat"><strong id="stat-status">0</strong><span id="stat-status-label">已标注</span></article>
+      <article class="stat review"><strong id="stat-review">—</strong><span>建议复核</span></article>
+    </section>
+
+    <div class="workspace">
+      <aside class="controls" aria-labelledby="controls-title">
+        <h2 id="controls-title">搜索与筛选</h2>
+        <div class="field">
+          <label for="search">搜索仓库</label>
+          <input id="search" type="search" placeholder="名称、简介、标签……" autocomplete="off">
+        </div>
+        <div class="filters">
+          <div class="field"><label for="filter-domain">一级领域</label><select id="filter-domain"><option value="">全部领域</option></select></div>
+          <div class="field"><label for="filter-language">GitHub 语言</label><select id="filter-language"><option value="">全部语言</option></select></div>
+          <div class="field"><label for="filter-purpose">用途</label><select id="filter-purpose"><option value="">全部用途</option></select></div>
+          <div class="field"><label for="filter-activity">活跃度</label><select id="filter-activity"><option value="">全部活跃度</option></select></div>
+          <div class="field"><label for="filter-status">个人状态</label><select id="filter-status"><option value="">全部状态</option><option value="Inbox">收件箱</option><option value="Read next">待读</option><option value="Experimented">已实践</option><option value="Reusable">可复用</option><option value="Archived">已归档</option></select></div>
+          <div class="field"><label for="filter-confidence">分类置信度</label><select id="filter-confidence"><option value="">全部置信度</option></select></div>
+          <div class="field"><label for="sort">排序</label><select id="sort"><option value="stars-desc">Star 数：从高到低</option><option value="stars-asc">Star 数：从低到高</option><option value="updated-desc">最近更新</option><option value="updated-asc">最早更新</option><option value="index-asc">原始收藏顺序</option></select></div>
+        </div>
+        <div class="control-actions">
+          <button class="button secondary" id="clear-button" type="button">清除筛选</button>
+          <button class="button primary" id="apply-focus" type="button">查看结果</button>
+        </div>
+      </aside>
+
+      <section class="results-panel" aria-labelledby="results-title">
+        <header class="results-heading">
+          <h2 id="results-title">仓库列表</h2>
+          <p class="status-message" id="app-status" role="status" aria-live="polite">正在加载数据……</p>
+        </header>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>仓库</th><th>领域</th><th>用途</th><th>语言</th><th>Stars</th><th>状态</th></tr></thead>
+            <tbody id="results-body"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="results-empty" hidden>没有仓库符合当前条件，可以尝试清除筛选。</div>
+        <nav class="pagination" aria-label="结果分页">
+          <button class="button secondary" id="previous-page" type="button">上一页</button>
+          <span id="page-info">第 — 页，共 — 页</span>
+          <button class="button secondary" id="next-page" type="button">下一页</button>
+        </nav>
+      </section>
+    </div>
+  </main>
+
+  <div class="backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="drawer" id="details-drawer" aria-labelledby="detail-title" aria-hidden="true" hidden>
+    <div class="drawer-inner">
+      <header class="drawer-header">
+        <div><p class="eyebrow">仓库详情</p><h2 id="detail-title"></h2><a class="repo-link" id="detail-link" target="_blank" rel="noreferrer">在 GitHub 打开 ↗</a></div>
+        <button class="icon-button" id="close-drawer" type="button" aria-label="关闭详情">×</button>
+      </header>
+      <p class="detail-description" id="detail-description"></p>
+      <dl class="metadata" id="detail-metadata"></dl>
+      <form class="annotation-form" id="annotation-form">
+        <h3>我的标注</h3>
+        <div class="form-grid">
+          <div class="field"><label for="annotation-status">状态</label><select id="annotation-status"><option value="Inbox">收件箱</option><option value="Read next">待读</option><option value="Experimented">已实践</option><option value="Reusable">可复用</option><option value="Archived">已归档</option></select></div>
+          <div class="field"><label for="annotation-priority">优先级</label><select id="annotation-priority"><option value="">未设置</option><option value="1">1 · 高</option><option value="2">2 · 中</option><option value="3">3 · 低</option></select></div>
+        </div>
+        <div class="field"><label for="annotation-action">下一步行动</label><input id="annotation-action" type="text" maxlength="300" placeholder="运行 quickstart、阅读论文……"></div>
+        <div class="field"><label for="annotation-notes">笔记</label><textarea id="annotation-notes" maxlength="4000" placeholder="值得记住什么？"></textarea></div>
+        <div class="form-actions"><button class="button primary" type="submit">保存标注</button><span class="save-message" id="save-message" role="status" aria-live="polite"></span></div>
+      </form>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
