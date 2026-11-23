@@ -1,13 +1,13 @@
 {
   "source": "https://api.github.com/users/alalagong/starred",
   "username": "alalagong",
-  "collected_at": "2026-11-16T09:36:32Z",
+  "collected_at": "2026-11-23T10:42:33Z",
   "row_count": 738,
-  "snapshot_file": "data/history/stars-2026-11-16T09-36-32Z.json",
+  "snapshot_file": "data/history/stars-2026-11-23T10-42-33Z.json",
   "change_summary": {
-    "added": 1,
-    "removed": 1,
-    "changed": 359,
-    "unchanged": 378
+    "added": 0,
+    "removed": 0,
+    "changed": 353,
+    "unchanged": 385
   }
 }
